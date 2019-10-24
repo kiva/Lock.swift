@@ -150,14 +150,22 @@ public class HeaderView: UIView {
         constraintEqual(anchor: logoView.topAnchor, toAnchor: centerGuide.topAnchor)
         logoView.translatesAutoresizingMaskIntoConstraints = false
 
-        constraintEqual(anchor: closeButton.centerYAnchor, toAnchor: self.topAnchor, constant: 45)
-        constraintEqual(anchor: closeButton.rightAnchor, toAnchor: self.rightAnchor, constant: -10)
+        if #available(iOS 11.0, *) {
+            constraintEqual(anchor: closeButton.topAnchor, toAnchor: self.safeAreaLayoutGuide.topAnchor, constant: 5)
+        } else {
+            constraintEqual(anchor: closeButton.centerYAnchor, toAnchor: self.topAnchor, constant: 45)
+        }
+        constraintEqual(anchor: closeButton.rightAnchor, toAnchor: self.rightAnchor, constant: -20)
         closeButton.widthAnchor.constraint(equalToConstant: 25).isActive = true
         closeButton.heightAnchor.constraint(equalToConstant: 25).isActive = true
         closeButton.translatesAutoresizingMaskIntoConstraints = false
 
-        constraintEqual(anchor: backButton.centerYAnchor, toAnchor: self.topAnchor, constant: 45)
-        constraintEqual(anchor: backButton.leftAnchor, toAnchor: self.leftAnchor, constant: 10)
+        if #available(iOS 11.0, *) {
+            constraintEqual(anchor: backButton.topAnchor, toAnchor: self.safeAreaLayoutGuide.topAnchor, constant: 5)
+        } else {
+            constraintEqual(anchor: backButton.centerYAnchor, toAnchor: self.topAnchor, constant: 45)
+        }
+        constraintEqual(anchor: backButton.leftAnchor, toAnchor: self.leftAnchor, constant: 20)
         backButton.widthAnchor.constraint(equalToConstant: 25).isActive = true
         backButton.heightAnchor.constraint(equalToConstant: 25).isActive = true
         backButton.translatesAutoresizingMaskIntoConstraints = false
@@ -166,9 +174,9 @@ public class HeaderView: UIView {
         self.apply(style: Style.Auth0)
         titleView.font = regularSystemFont(size: 20)
         logoView.image = image(named: "ic_auth0", compatibleWithTraitCollection: self.traitCollection)
-        closeButton.setBackgroundImage(image(named: "ic_close", compatibleWithTraitCollection: self.traitCollection)?.withRenderingMode(.alwaysOriginal), for: .normal)
+        closeButton.setImage(image(named: "ic_close", compatibleWithTraitCollection: self.traitCollection)?.withRenderingMode(.alwaysOriginal), for: .normal)
         closeButton.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
-        backButton.setBackgroundImage(image(named: "ic_back", compatibleWithTraitCollection: self.traitCollection)?.withRenderingMode(.alwaysOriginal), for: .normal)
+        backButton.setImage(image(named: "ic_back", compatibleWithTraitCollection: self.traitCollection)?.withRenderingMode(.alwaysOriginal), for: .normal)
         backButton.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
 
         self.titleView = titleView
@@ -181,7 +189,7 @@ public class HeaderView: UIView {
     }
 
     public override var intrinsicContentSize: CGSize {
-        return CGSize(width: 200, height: 154)
+        return CGSize(width: 200, height: 128)
     }
 
     @objc func buttonPressed(_ sender: UIButton) {
@@ -249,7 +257,7 @@ extension HeaderView: Stylable {
         self.titleColor = style.titleColor
         self.logo = style.logo.image(compatibleWithTraits: self.traitCollection)
         self.maskImage = style.headerMask
-        self.backButton?.setBackgroundImage(style.headerBackIcon.image(compatibleWithTraits: self.traitCollection)?.withRenderingMode(.alwaysOriginal), for: .normal)
-        self.closeButton?.setBackgroundImage(style.headerCloseIcon.image(compatibleWithTraits: self.traitCollection)?.withRenderingMode(.alwaysOriginal), for: .normal)
+        self.backButton?.setImage(style.headerBackIcon.image(compatibleWithTraits: self.traitCollection)?.withRenderingMode(.alwaysOriginal), for: .normal)
+        self.closeButton?.setImage(style.headerCloseIcon.image(compatibleWithTraits: self.traitCollection)?.withRenderingMode(.alwaysOriginal), for: .normal)
     }
 }
