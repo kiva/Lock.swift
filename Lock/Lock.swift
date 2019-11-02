@@ -202,6 +202,18 @@ public class Lock: NSObject {
     }
 
     /**
+     Register a callback to be notified of the user's connection request, e.g: "facebook"
+
+     - parameter callback: called when login or registration is requested with the connection value
+
+     - returns: Lock itself for chaining
+    */
+    public func onConnectionRequest(callback: @escaping (String) -> Void) -> Lock {
+        self.observerStore.onConnectionRequest = callback
+        return self
+    }
+
+    /**
      Register a callback to receive the result of a successful AuthN/AuthZ.
 
      - parameter callback: called on successful AuthN/AuthZ
