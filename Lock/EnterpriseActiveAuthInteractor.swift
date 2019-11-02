@@ -105,6 +105,7 @@ struct EnterpriseActiveAuthInteractor: DatabaseAuthenticatable, Loggable {
     }
 
     func login(_ callback: @escaping (CredentialAuthError?) -> Void) {
+        dispatcher.dispatch(result: Result.connectionRequest("database"))
         let identifier: String
 
         if let email = self.email, self.validEmail {
