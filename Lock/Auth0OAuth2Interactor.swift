@@ -31,6 +31,7 @@ struct Auth0OAuth2Interactor: OAuth2Authenticatable, Loggable {
     let nativeHandlers: [String: AuthProvider]
 
     func start(_ connection: String, loginHint: String?, screenHint: String?, useEphemeralSession: Bool, callback: @escaping (OAuth2AuthenticatableError?) -> Void) {
+        dispatcher.dispatch(result: Result.connectionRequest(connection))
         if let nativeHandler = self.nativeHandlers[connection], type(of: nativeHandler).isAvailable() {
             self.nativeAuth(withConnection: connection, nativeAuth: nativeHandler, callback: callback)
         } else {
