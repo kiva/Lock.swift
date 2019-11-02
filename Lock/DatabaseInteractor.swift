@@ -91,6 +91,7 @@ struct DatabaseInteractor: DatabaseAuthenticatable, DatabaseUserCreator, Loggabl
     }
 
     func login(_ callback: @escaping (CredentialAuthError?) -> Void) {
+        dispatcher.dispatch(result: Result.connectionRequest("database"))
         let identifier: String
 
         if let email = self.email, self.validEmail {
@@ -121,6 +122,7 @@ struct DatabaseInteractor: DatabaseAuthenticatable, DatabaseUserCreator, Loggabl
     }
 
     func create(_ callback: @escaping (DatabaseUserCreatorError?, CredentialAuthError?) -> Void) {
+        dispatcher.dispatch(result: Result.connectionRequest("database"))
         let databaseName = connection.name
 
         guard

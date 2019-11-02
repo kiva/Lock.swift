@@ -25,6 +25,7 @@ import UIKit
 import Auth0
 
 struct ObserverStore: Dispatcher {
+    var onConnectionRequest: (String) -> Void = { _ in }
     var onAuth: (Credentials) -> Void = { _ in }
     var onFailure: (Error) -> Void = { _ in }
     var onCancel: () -> Void = {  }
@@ -39,6 +40,8 @@ struct ObserverStore: Dispatcher {
     func dispatch(result: Result) {
         let closure: () -> Void
         switch result {
+        case .connectionRequest(let provider):
+            closure = { self.onConnectionRequest(provider) }
         case .auth(let credentials):
             if self.options.autoClose {
                 closure = dismiss(from: controller, completion: { self.onAuth(credentials) })
@@ -82,6 +85,7 @@ struct ObserverStore: Dispatcher {
 }
 
 enum Result {
+    case connectionRequest(String)
     case auth(Credentials)
     case error(Error)
     case cancel

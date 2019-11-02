@@ -186,6 +186,7 @@ class ViewController: UIViewController {
     private func showLock(lock: Lock) {
         Log.enable(minimumSeverity: LogSeverity.verbose, debugMode: true)
         lock
+            .onConnectionRequest { Log.info?.message("Connection Request with: \($0)") }
             .onAuth { Log.info?.message("Obtained credentials \($0)") }
             .onError { Log.error?.message("Failed with \($0)") }
             .onSignUp { email, _ in  Log.debug?.message("New user \(email)") }
