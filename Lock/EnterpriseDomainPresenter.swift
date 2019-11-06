@@ -26,7 +26,12 @@ class EnterpriseDomainPresenter: Presentable, Loggable {
 
     var interactor: EnterpriseDomainInteractor
     var options: Options
-    var authPresenter: AuthPresenter?
+    var authPresenter: AuthPresenter? {
+        didSet {
+            self.authPresenter?.navigator = self.navigator
+            self.authPresenter?.messagePresenter = self.messagePresenter
+        }
+    }
 
     init(interactor: EnterpriseDomainInteractor, navigator: Navigable, options: Options) {
         self.interactor = interactor
@@ -40,7 +45,11 @@ class EnterpriseDomainPresenter: Presentable, Loggable {
         }
     }
 
-    var navigator: Navigable?
+    var navigator: Navigable? {
+        didSet {
+            self.authPresenter?.navigator = self.navigator
+        }
+    }
 
     var view: View {
         let email = self.interactor.validEmail ? self.interactor.email : nil
