@@ -28,7 +28,6 @@ class AuthPresenter: Presentable, Loggable {
     let interactor: OAuth2Authenticatable
     let customStyle: [String: AuthStyle]
 
-    var navigator: Navigable?
     var messagePresenter: MessagePresenter?
 
     init(connections: [OAuth2Connection], interactor: OAuth2Authenticatable, customStyle: [String: AuthStyle]) {
@@ -49,23 +48,11 @@ class AuthPresenter: Presentable, Loggable {
 
     private func newView(withInsets insets: UIEdgeInsets, mode: AuthCollectionView.Mode) -> AuthCollectionView {
         let view = AuthCollectionView(connections: self.connections, mode: mode, insets: insets, customStyle: self.customStyle) { name in
-            self.showTermsPrompt {
-                self.interactor.login(name, loginHint: nil) { error in
-                    guard let error = error else { return }
-                    self.messagePresenter?.showError(error)
-                }
+            self.interactor.login(name, loginHint: nil) { error in
+                guard let error = error else { return }
+                self.messagePresenter?.showError(error)
             }
         }
         return view
-    }
-
-    func showTermsPrompt(successHandler: @escaping () -> Void) {
-        guard let navigator = navigator else {
-            successHandler()
-            return
-        }
-        navigator.showTermsPrompt(atSource: nil) { _ in
-            successHandler()
-        }
     }
 }

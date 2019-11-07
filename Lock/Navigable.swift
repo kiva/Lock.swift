@@ -37,20 +37,3 @@ protocol Navigable {
 
     func onBack()
 }
-
-extension Navigable {
-    func showTermsPrompt(atSource source: UIView?, successHandler: @escaping (UIView?) -> Void) {
-        let terms = "Terms & Policy".i18n(key: "com.auth0.lock.alert.tos.title", comment: "tos title")
-        let alert = UIAlertController(title: terms, message: "By signing up, you agree to our terms of service and privacy policy".i18n(key: "com.auth0.lock.alert.tos", comment: "tos & privacy"), preferredStyle: .alert)
-        if let source = source {
-            alert.popoverPresentationController?.sourceView = source
-            alert.popoverPresentationController?.sourceRect = source.bounds
-        }
-        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
-        let okAction = UIAlertAction(title: "Accept", style: .default) { _ in
-            successHandler(source)
-        }
-        [cancelAction, okAction].forEach { alert.addAction($0) }
-        present(alert)
-    }
-}

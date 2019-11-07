@@ -30,11 +30,7 @@ class DatabasePresenter: Presentable, Loggable {
 
     var authenticator: DatabaseAuthenticatable
     var creator: DatabaseUserCreator
-    var navigator: Navigable {
-        didSet {
-            self.authPresenter?.navigator = self.navigator
-        }
-    }
+    var navigator: Navigable
 
     var messagePresenter: MessagePresenter? {
         didSet {
@@ -42,12 +38,7 @@ class DatabasePresenter: Presentable, Loggable {
         }
     }
 
-    var authPresenter: AuthPresenter? {
-        didSet {
-            self.authPresenter?.navigator = self.navigator
-            self.authPresenter?.messagePresenter = self.messagePresenter
-        }
-    }
+    var authPresenter: AuthPresenter?
     var enterpriseInteractor: EnterpriseDomainInteractor?
 
     var initialEmail: String? { return self.authenticator.validEmail ? self.authenticator.email : nil }
@@ -214,7 +205,7 @@ class DatabasePresenter: Presentable, Loggable {
                 let validForm = view?.allFields?
                     .filter { !$0.state.isValid }
                     .isEmpty ?? false
-                if validForm { self.navigator.showTermsPrompt(atSource: button) { _ in action(button) } }
+                if validForm { self.showTermsPrompt(atButton: button) { _ in action(button) } }
             } else {
                 action(button)
             }
@@ -282,6 +273,19 @@ class DatabasePresenter: Presentable, Loggable {
         } catch {
             input.showError()
         }
+    }
+
+    func showTermsPrompt(atButton button: PrimaryButton, successHandler: @escaping (PrimaryButton) -> Void) {
+        let terms = "Terms & Policy".i18n(key: "com.auth0.lock.alert.tos.title", comment: "tos title")
+        let alert = UIAlertController(title: terms, message: "By signing up, you agree to our terms of\n service and privacy policy".i18n(key: "com.auth0.lock.alert.tos", comment: "tos & privacy"), preferredStyle: .alert)
+        alert.popoverPresentationController?.sourceView = button
+        alert.popoverPresentationController?.sourceRect = button.bounds
+        let cancelAction = UIAlertAction(title: "Cancel", style: .cancel, handler: nil)
+        let okAction = UIAlertAction(title: "Accept", style: .default) { _ in
+            successHandler(button)
+        }
+        [cancelAction, okAction].forEach { alert.addAction($0) }
+        self.navigator.present(alert)
     }
 }
 
