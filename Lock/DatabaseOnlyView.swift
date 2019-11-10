@@ -33,7 +33,6 @@ class DatabaseOnlyView: UIView, DatabaseView {
     weak var secondaryStrut: UIView?
     weak var ssoBar: InfoBarView?
     weak var spacer: UIView?
-    private var style: Style?
     weak var showPasswordButton: IconButton?
 
     weak var identityField: InputField?
@@ -46,14 +45,16 @@ class DatabaseOnlyView: UIView, DatabaseView {
     private weak var container: UIStackView?
 
     let allowedModes: DatabaseMode
+    var style: Style
 
-    init(allowedModes: DatabaseMode = [.Login, .Signup, .ResetPassword]) {
+    init(allowedModes: DatabaseMode = [.Login, .Signup, .ResetPassword], style: Style) {
         let primaryButton = PrimaryButton()
         let container = UIStackView()
 
         self.allowedModes = allowedModes
         self.primaryButton = primaryButton
         self.container = container
+        self.style = style
 
         super.init(frame: CGRect.zero)
 
@@ -144,7 +145,7 @@ class DatabaseOnlyView: UIView, DatabaseView {
         self.allFields = form.stackView.arrangedSubviews.map { $0 as? InputField }.filter { $0 != nil }.map { $0! }
 
         if let passwordPolicyValidator = passwordPolicyValidator {
-            let passwordPolicyView = PolicyView(rules: passwordPolicyValidator.policy.rules)
+            let passwordPolicyView = PolicyView(style: style, rules: passwordPolicyValidator.policy.rules)
             passwordPolicyValidator.delegate = passwordPolicyView
             let passwordIndex = form.stackView.arrangedSubviews.firstIndex(of: form.passwordField)
             form.stackView.insertArrangedSubview(passwordPolicyView, at: passwordIndex!)
@@ -165,7 +166,7 @@ class DatabaseOnlyView: UIView, DatabaseView {
         }
 
        if showPassword, let passwordInput = form.passwordField.textField {
-            self.showPasswordButton = form.passwordField.addFieldButton(withIcon: "ic_show_password_hidden", color: Style.Auth0.inputIconColor)
+        self.showPasswordButton = form.passwordField.addFieldButton(withIcon: "ic_show_password_hidden", color: .cyan)
             self.showPasswordButton?.onPress = { [unowned self] button in
                 passwordInput.isSecureTextEntry = !passwordInput.isSecureTextEntry
                 button.icon = LazyImage(name: passwordInput.isSecureTextEntry ? "ic_show_password_hidden" : "ic_show_password_visible", bundle: Lock.bundle).image(compatibleWithTraits: self.traitCollection)
@@ -260,10 +261,8 @@ class DatabaseOnlyView: UIView, DatabaseView {
         } else {
             self.container?.insertArrangedSubview(view, at: formOnlyIndex)
         }
-        if let style = self.style {
             self.separator?.textColor = style.seperatorTextColor
             self.container?.styleSubViews(style: style)
-        }
     }
 
     func apply(style: Style) {
