@@ -24,6 +24,8 @@ import UIKit
 
 class MessageView: UIView {
 
+    var style: Style?
+
     weak var messageLabel: UILabel?
 
     var message: String? {
@@ -37,7 +39,7 @@ class MessageView: UIView {
 
     var type: Flavor = .success {
         didSet {
-            self.backgroundColor = self.type.color
+            self.backgroundColor = self.type.color(style: style)
             self.messageLabel?.textColor = self.type.textColor
         }
     }
@@ -50,12 +52,12 @@ class MessageView: UIView {
             return .white
         }
 
-        var color: UIColor {
+        func color(style: Style?) -> UIColor {
             switch self {
-            case .success:
-                return UIColor ( red: 0.4941, green: 0.8275, blue: 0.1294, alpha: 1.0 )
+            case  .success:
+                return style?.primaryColor ?? Style.Auth0.primaryColor
             case .failure:
-                return UIColor ( red: 1.0, green: 0.2431, blue: 0.0, alpha: 1.0 )
+                return style?.inputBorderColorError ?? Style.Auth0.inputBorderColorError
             }
         }
     }
@@ -65,8 +67,9 @@ class MessageView: UIView {
         self.layoutMessage()
     }
 
-    convenience init() {
+    convenience init(style: Style) {
         self.init(frame: CGRect.zero)
+        self.style = style
     }
 
     required convenience init?(coder aDecoder: NSCoder) {
@@ -100,6 +103,6 @@ class MessageView: UIView {
         messageLabel.translatesAutoresizingMaskIntoConstraints = false
 
         self.messageLabel = messageLabel
-        self.backgroundColor = self.type.color
+        self.backgroundColor = self.type.color(style: self.style)
     }
 }

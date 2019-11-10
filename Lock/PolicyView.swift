@@ -24,13 +24,15 @@ import UIKit
 
 class PolicyView: UIStackView, PasswordPolicyValidatorDelegate {
 
+    let style: Style
     let views: [RuleView]
 
-    init(rules: [Rule]) {
+    init(style: Style, rules: [Rule]) {
+        self.style = style
         self.views = rules.flatMap { (rule: Rule) -> [RuleView] in
-            var views = [RuleView(message: rule.message)]
+            var views = [RuleView(message: rule.message, style: style)]
             if let composed = rule as? AtLeastRule {
-                composed.rules.forEach { views.append(RuleView(message: $0.message, level: 1)) }
+                composed.rules.forEach { views.append(RuleView(message: $0.message, style: style, level: 1)) }
             }
             return views
         }
@@ -66,20 +68,22 @@ class PolicyView: UIStackView, PasswordPolicyValidatorDelegate {
 class RuleView: UIView {
 
     let message: String
+    let style: Style
     var status: Status = .none {
         didSet {
-            self.render(text: self.message, withStatus: self.status)
+            self.render(text: self.message, withStatus: self.status, style: style)
         }
     }
     let label: UILabel
 
-    init(message: String, level: Int = 0) {
+    init(message: String, style: Style, level: Int = 0) {
         self.message = message
+        self.style = style
         self.label = UILabel()
         super.init(frame: .zero)
 
         self.label.numberOfLines = 3
-        self.render(text: message, withStatus: self.status)
+        self.render(text: message, withStatus: self.status, style: style)
 
         self.addSubview(self.label)
         let margin = 20 * level
@@ -114,34 +118,33 @@ class RuleView: UIView {
             }
         }
 
-        var color: UIColor {
+        func color(style: Style) -> UIColor {
             switch self {
             case .ok:
-                return UIColor(red: 0.502, green: 0.820, blue: 0.208, alpha: 1)
+                return style.primaryColor
             case .error:
-                return UIColor(red: 0.745, green: 0.271, blue: 0.153, alpha: 1)
+                return style.inputBorderColorError
             case .none:
-                return UIColor(red: 0.016, green: 0.016, blue: 0.016, alpha: 1)
+                return style.textColor
             }
         }
     }
 
-    fileprivate func render(text: String, withStatus status: Status) {
+    fileprivate func render(text: String, withStatus status: Status, style: Style) {
         let font = UIFont.systemFont(ofSize: 13)
 
         let attachment = NSTextAttachment()
-        attachment.image = status.icon
+        attachment.image = status.icon?.withRenderingMode(.alwaysTemplate)
         attachment.bounds = CGRect(x: 0.0, y: font.descender / 2.0, width: attachment.image!.size.width, height: attachment.image!.size.height)
 
         let attributedText = NSMutableAttributedString()
         attributedText.append(NSAttributedString(attachment: attachment))
-        attributedText.append(NSAttributedString(
-            string: "  " + text,
-            attributes: [
-                NSAttributedString.attributedKeyColor: status.color,
-                NSAttributedString.attributedFont: font
-            ]
-        ))
+        attributedText.append(NSAttributedString(string: "  \(text)"))
+        attributedText.addAttributes([
+            NSAttributedString.attributedKeyColor: status.color(style: style),
+            NSAttributedString.attributedFont: font
+        ], range: NSRange(location: 0, length: attributedText.length))
+
         self.label.attributedText = attributedText
     }
 }

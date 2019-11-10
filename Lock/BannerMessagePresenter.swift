@@ -24,6 +24,8 @@ import UIKit
 
 struct BannerMessagePresenter: MessagePresenter {
 
+    let style: Style
+
     weak var root: UIView?
     weak var messageView: MessageView?
 
@@ -42,7 +44,7 @@ struct BannerMessagePresenter: MessagePresenter {
     }
 
     private mutating func show(message: String, flavor: MessageView.Flavor) {
-        let view = MessageView()
+        let view = MessageView(style: self.style)
         view.type = flavor
         view.message = message
 
