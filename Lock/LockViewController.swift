@@ -117,7 +117,7 @@ public class LockViewController: UIViewController {
         header.apply(style: style)
 
         self.headerView = header
-        self.messagePresenter = BannerMessagePresenter(root: root, messageView: nil)
+        self.messagePresenter = BannerMessagePresenter(style: self.lock.style, root: root, messageView: nil)
     }
 
     public override func viewWillAppear(_ animated: Bool) {

@@ -136,18 +136,16 @@ class RuleView: UIView {
         let font = UIFont.systemFont(ofSize: 13)
 
         let attachment = NSTextAttachment()
-        attachment.image = status.icon
+        attachment.image = status.icon?.withRenderingMode(.alwaysTemplate)
         attachment.bounds = CGRect(x: 0.0, y: font.descender / 2.0, width: attachment.image!.size.width, height: attachment.image!.size.height)
 
         let attributedText = NSMutableAttributedString()
         attributedText.append(NSAttributedString(attachment: attachment))
-        attributedText.append(NSAttributedString(
-            string: "  " + text,
-            attributes: [
-                NSAttributedString.attributedKeyColor: status.color(from: style),
-                NSAttributedString.attributedFont: font
-            ]
-        ))
+        attributedText.append(NSAttributedString(string: "  " + text))
+        attributedText.addAttributes([
+            NSAttributedString.attributedKeyColor: status.color(from: style),
+            NSAttributedString.attributedFont: font
+        ], range: NSRange(location: 0, length: attributedText.length))
         self.label.attributedText = attributedText
     }
 }
