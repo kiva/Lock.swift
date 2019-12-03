@@ -84,8 +84,10 @@ public class AuthButton: UIView {
 
     public var size: Size {
         didSet {
-            self.subviews.forEach { $0.removeFromSuperview() }
-            self.layout(size: self.size)
+            if size != oldValue {
+                self.subviews.forEach { $0.removeFromSuperview() }
+                self.layout(size: self.size)
+            }
         }
     }
 
@@ -100,6 +102,22 @@ public class AuthButton: UIView {
         self.size = size
         super.init(frame: .zero)
         self.layout(size: self.size)
+    }
+
+    public init(size: Size, customControl: UIControl) {
+        self.size = size
+        super.init(frame: .zero)
+        self.addSubview(customControl)
+        constraintEqual(anchor: customControl.leftAnchor, toAnchor: self.leftAnchor)
+        constraintEqual(anchor: customControl.topAnchor, toAnchor: self.topAnchor)
+        constraintEqual(anchor: customControl.rightAnchor, toAnchor: self.rightAnchor)
+        constraintEqual(anchor: customControl.bottomAnchor, toAnchor: self.bottomAnchor)
+        if case .small = size {
+            constraintEqual(anchor: customControl.widthAnchor, toAnchor: customControl.heightAnchor)
+        }
+        dimension(dimension: customControl.heightAnchor, greaterThanOrEqual: 50)
+        customControl.translatesAutoresizingMaskIntoConstraints = false
+        customControl.addTarget(self, action: #selector(buttonPressed), for: .touchUpInside)
     }
 
     required override public init(frame: CGRect) {
@@ -140,7 +158,7 @@ public class AuthButton: UIView {
         dimension(dimension: button.heightAnchor, greaterThanOrEqual: 50)
         button.translatesAutoresizingMaskIntoConstraints = false
 
-        button.layer.cornerRadius = 3
+        button.layer.cornerRadius = 6
         button.layer.masksToBounds = true
 
         if case .big = size {
