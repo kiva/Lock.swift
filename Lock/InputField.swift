@@ -200,7 +200,7 @@ class InputField: UIView, Stylable {
         self.errorLabel = errorLabel
 
         self.containerView?.backgroundColor = .white
-        self.containerView?.layer.cornerRadius = 3.67
+        self.containerView?.layer.cornerRadius = 6
         self.containerView?.layer.masksToBounds = true
         self.containerView?.layer.borderWidth = 1
         self.type = .email
