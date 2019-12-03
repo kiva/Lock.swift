@@ -21,6 +21,7 @@
 // THE SOFTWARE.
 
 import UIKit
+import AuthenticationServices
 
 class AuthCollectionView: UIView, View {
 
@@ -138,21 +139,34 @@ class AuthCollectionView: UIView, View {
 
     func apply(style: Style) {
     }
-}
 
-func oauth2Buttons(forConnections connections: [OAuth2Connection], customStyle: [String: AuthStyle], isLogin login: Bool, onAction: @escaping (String) -> Void) -> [AuthButton] {
-    return connections.map { connection -> AuthButton in
-        let style = customStyle[connection.name] ?? connection.style
-        let button = AuthButton(size: .big)
-        button.title = login ? style.localizedLoginTitle : style.localizedSignUpTitle
-        button.normalColor = style.normalColor
-        button.highlightedColor = style.highlightedColor
-        button.borderColor = style.borderColor
-        button.titleColor = style.foregroundColor
-        button.icon = style.image
-        button.onPress = { _ in
-            onAction(connection.name)
+    func oauth2Buttons(forConnections connections: [OAuth2Connection], customStyle: [String: AuthStyle], isLogin login: Bool, onAction: @escaping (String) -> Void) -> [AuthButton] {
+        return connections.map { connection -> AuthButton in
+            let style = customStyle[connection.name] ?? connection.style
+            let button: AuthButton
+            if #available(iOS 13, *), connection.name == "apple" {
+                let buttonType: ASAuthorizationAppleIDButton.ButtonType
+                if #available(iOS 13.2, *), !login {
+                    buttonType = .signUp
+                } else {
+                    buttonType = .signIn
+                }
+                let buttonStyle: ASAuthorizationAppleIDButton.Style = traitCollection.userInterfaceStyle == .dark ? .white : .black
+                let appleIDButton = ASAuthorizationAppleIDButton(type: buttonType, style: buttonStyle)
+                button = AuthButton(size: .big, customControl: appleIDButton)
+            } else {
+                button = AuthButton(size: .big)
+            }
+            button.title = login ? style.localizedLoginTitle : style.localizedSignUpTitle
+            button.normalColor = style.normalColor
+            button.highlightedColor = style.highlightedColor
+            button.borderColor = style.borderColor
+            button.titleColor = style.foregroundColor
+            button.icon = style.image
+            button.onPress = { _ in
+                onAction(connection.name)
+            }
+            return button
         }
-        return button
     }
 }

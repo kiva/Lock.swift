@@ -203,7 +203,7 @@ class InternationalPhoneInputView: UIView, Form, Stylable {
         actionIconView.tintColor = Style.Auth0.inputIconBackgroundColor
 
         container.backgroundColor = Style.Auth0.inputBackgroundColor
-        container.layer.cornerRadius = 3.67
+        container.layer.cornerRadius = 6
         container.layer.masksToBounds = true
         container.layer.borderWidth = 1
         container.layer.borderColor = Style.Auth0.inputBorderColor.cgColor
