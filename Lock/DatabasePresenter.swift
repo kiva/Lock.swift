@@ -312,8 +312,8 @@ class DatabasePresenter: Presentable, Loggable {
     }
 
     func showTermsPrompt(atButton button: PrimaryButton, successHandler: @escaping (PrimaryButton) -> Void) {
-        let terms = "Terms & Policy".i18n(key: "com.auth0.lock.database.button.tos.title", comment: "tos title")
-        let alert = UIAlertController(title: terms, message: "By signing up, you agree to our terms of\n service and privacy policy".i18n(key: "com.auth0.lock.database.button.tos", comment: "tos & privacy"), preferredStyle: .alert)
+        let terms = "Terms & Policy".i18n(key: "com.auth0.lock.database.alert.tos.title", comment: "tos title")
+        let alert = UIAlertController(title: terms, message: "By signing up, you agree to our terms of\n service and privacy policy".i18n(key: "com.auth0.lock.database.alert.tos", comment: "tos & privacy"), preferredStyle: .alert)
         alert.popoverPresentationController?.sourceView = button
         alert.popoverPresentationController?.sourceRect = button.bounds
         let cancelAction = UIAlertAction(title: "Cancel".i18n(key: "com.auth0.lock.database.tos.sheet.cancel", comment: "Cancel"), style: .cancel, handler: nil)
