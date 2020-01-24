@@ -137,6 +137,10 @@ public class LockViewController: UIViewController {
         self.present(self.router.root, title: Route.root.title(withStyle: self.lock.style))
     }
 
+    public func presentForgotPassword() {
+        self.router?.navigate(.forgotPassword)
+    }
+
     func present(_ presentable: Presentable?, title: String?) {
         guard var presenter = presentable else { return }
         self.current?.remove()
