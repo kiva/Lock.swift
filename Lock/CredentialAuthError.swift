@@ -22,11 +22,11 @@
 
 import Foundation
 
-enum CredentialAuthError: Error, LocalizableError {
+public enum CredentialAuthError: Error, LocalizableError {
     case nonValidInput
     case userBlocked
     case invalidEmailPassword
-    case couldNotLogin
+    case couldNotLogin(cause: String)
     case passwordChangeRequired
     case passwordLeaked
     case tooManyAttempts
@@ -36,7 +36,7 @@ enum CredentialAuthError: Error, LocalizableError {
     case customRuleFailure(cause: String)
     case verificationFailure(error: LocalizableError)
 
-    var localizableMessage: String {
+    public var localizableMessage: String {
         switch self {
         case .userBlocked:
             return "THE USER IS BLOCKED.".i18n(key: "com.auth0.lock.error.authentication.blocked_user", comment: "user is blocked")
@@ -59,7 +59,7 @@ enum CredentialAuthError: Error, LocalizableError {
         }
     }
 
-    var userVisible: Bool {
+    public var userVisible: Bool {
         switch self {
         case .multifactorRequired, .multifactorTokenRequired, .nonValidInput:
             return false
@@ -72,7 +72,7 @@ enum CredentialAuthError: Error, LocalizableError {
 }
 
 extension CredentialAuthError: Equatable {
-    static func == (lhs: CredentialAuthError, rhs: CredentialAuthError) -> Bool {
+    public static func == (lhs: CredentialAuthError, rhs: CredentialAuthError) -> Bool {
         switch (lhs, rhs) {
         case (.nonValidInput, .nonValidInput):
             return true
