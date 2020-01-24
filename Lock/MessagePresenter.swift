@@ -22,7 +22,7 @@
 
 import Foundation
 
-protocol LocalizableError {
+public protocol LocalizableError {
     var localizableMessage: String { get }
     var userVisible: Bool { get }
 }
