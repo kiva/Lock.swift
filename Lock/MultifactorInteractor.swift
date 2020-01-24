@@ -79,7 +79,7 @@ class MultifactorInteractor: MultifactorAuthenticatable, Loggable {
         if self.options.oidcConformant {
             guard let mfaToken = self.mfaToken  else {
                 self.logger.error("Token required for OIDC MFA")
-                return callback(.couldNotLogin)
+                return callback(.couldNotLogin(cause: "Token required for OIDC MFA"))
             }
 
             if self.challenge?.challengeType == "oob", let oobCode = self.challenge?.oobCode {
