@@ -84,8 +84,8 @@ extension CredentialAuthenticatable {
             self.dispatcher.dispatch(result: .error(CredentialAuthError.passwordLeaked))
         case .failure(let cause):
             self.logger.error("Failed login of user <\(identifier)> with error \(cause)")
-            callback(.couldNotLogin)
-            self.dispatcher.dispatch(result: .error(CredentialAuthError.couldNotLogin))
+            callback(.couldNotLogin(cause: cause.localizedDescription))
+            self.dispatcher.dispatch(result: .error(CredentialAuthError.couldNotLogin(cause: cause.localizedDescription)))
         case .success(let credentials):
             self.logger.info("Authenticated user <\(identifier)>")
             callback(nil)
