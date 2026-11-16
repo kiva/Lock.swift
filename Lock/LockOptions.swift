@@ -39,6 +39,7 @@ struct LockOptions: OptionBuildable {
     var allow: DatabaseMode = [.Login, .Signup, .ResetPassword]
     var autoClose: Bool = true
     var initialScreen: DatabaseScreen = .login
+    var signupHandler: (() -> Void)?
     var usernameStyle: DatabaseIdentifierStyle = [.Username, .Email]
     var customSignupFields: [CustomTextField] = []
     var loginAfterSignup: Bool = true

@@ -72,6 +72,9 @@ class DatabasePresenter: Presentable, Loggable {
             self.logger.debug("selected \(selected)")
             self.navigator.resetScroll(false)
             switch selected {
+            case .signup where self.options.signupHandler != nil:
+                switcher.selected = .login
+                self.options.signupHandler?()
             case .signup:
                 self.showSignup(inView: view, username: self.initialUsername, email: self.initialEmail)
             case .login:

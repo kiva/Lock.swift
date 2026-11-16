@@ -72,6 +72,9 @@ public protocol OptionBuildable: Options {
         /// Initial screen displayed by Lock when a database connection is available. By default is Login
     var initialScreen: DatabaseScreen { get set }
 
+        /// Called instead of showing the signup form when the user picks the signup tab, so the app can run its own signup. Lock switches the tab back to login. It is not called when Lock opens directly on signup (`initialScreen` is signup or `allow` has no login). By default is nil.
+    var signupHandler: (() -> Void)? { get set }
+
     /**
      Specify what type of identifier the database login will require to the user when the connection `requires_username` flag is true.
      The possible values are email, username or both and by default it will require both.

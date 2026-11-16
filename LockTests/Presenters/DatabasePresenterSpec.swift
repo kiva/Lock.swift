@@ -168,6 +168,19 @@ class DatabasePresenterSpec: QuickSpec {
                 expect(view.switcher).toNot(beNil())
             }
 
+            it("should call signup handler instead of showing signup") {
+                var options = LockOptions()
+                var handlerCalls = 0
+                options.signupHandler = { handlerCalls += 1 }
+                presenter = DatabasePresenter(authenticator: interactor, creator: interactor, connection: DatabaseConnection(name: connection, requiresUsername: true), navigator: navigator, options: options, style: .Auth0)
+                view = presenter.view as? DatabaseOnlyView
+                view.switcher?.selected = .signup
+                view.switcher?.onSelectionChange(view.switcher!)
+                expect(handlerCalls) == 1
+                expect(view.switcher?.selected) == .login
+                expect(view.form as? CredentialView).toNot(beNil())
+            }
+
             it("should remove switcher when login or signup are not allowed") {
                 var options = LockOptions()
                 options.allow = [.Login]
