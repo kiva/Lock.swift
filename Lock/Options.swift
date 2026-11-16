@@ -41,6 +41,7 @@ public protocol Options {
     var allow: DatabaseMode { get }
     var autoClose: Bool { get }
     var initialScreen: DatabaseScreen { get }
+    var signupHandler: (() -> Void)? { get }
     var usernameStyle: DatabaseIdentifierStyle { get }
     var customSignupFields: [CustomTextField] { get }
     var loginAfterSignup: Bool { get }
